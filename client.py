@@ -1,4 +1,9 @@
-import requests as req
+#import requests as req
+import sqlite3
+import random
+conn=sqlite3.connect('CafeDB5.db')
+c=conn.cursor()
+'''
 def client_init():
     #id is only made till 10 then the list reitterates find better solution,also work with some db instead of txt files
     f = open("clientiddb.txt","r")
@@ -18,6 +23,23 @@ def client_init():
     print("New id assinged:- "+id)
     f.close
     return id
+'''
+
+def client_init():
+    r = random.randint(100,999)
+    c.execute('CREATE TABLE IF NOT EXISTS CafeApp ( id INTEGER PRIMARY KEY AUTOINCREMENT , tok INTEGER, total INTEGER)')
+    c.execute('INSERT INTO CafeApp (tok, total) VALUES(?,?)',(r,total))
+    #c.execute('INSERT INTO CafeApp (total) VALUES(?)',(total,))
+    conn.commit()
+    
+    #print(rows)
+'''
+    c.execute('SELECT * FROM CafeApp')
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
+'''    
+    
 
 def menu():
     total=0
@@ -70,13 +92,13 @@ def menu():
         print("\t"+x)
     return total
 
-def payment(tot):
+'''def payment(tot):
     #Defined this function to mimic payment gateway and making the app wait for a response
     resp = req.get("https://github.com/ilulale/CafeAppn")
     if resp.status_code==200:
         return 1
     else:
-        return 0    
+        return 0    '''
 
 def token_gen(num):
     #find a better genration algorithm for tokens
@@ -101,12 +123,26 @@ def token_gen(num):
 
 
 print("Welcome")    
-cid=client_init()
+
 total=menu()
+client_init()
+
 print("The total is INR/- "+str(total))
-pay=payment(total)
+#payment in original code
+pay=1
 if pay==1:
+    
     print("Payment done")
-    token=token_gen(cid)
+    #token=token_gen(cid)
+    c.execute('SELECT * FROM CafeApp')
+    rows = c.fetchall()
+    print("the table is:\n")
+    for row in rows:
+        print(row)
+    print("your ID, token and total is:")
+    print(row)
 else:
     print("Payment unsuccessful, try again")
+rows = c.fetchall() 
+for row in rows:
+    print(row[0])
